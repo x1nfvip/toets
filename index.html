@@ -1,548 +1,344 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="nl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verpakkings- en Labelkennis - Studiehulp</title>
-    <style>
-        :root {
-            --primary: #2c3e50;
-            --secondary: #3498db;
-            --light: #ecf0f1;
-            --dark: #34495e;
-            --correct: #2ecc71;
-            --wrong: #e74c3c;
-        }
-        
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-        body {
-            background-color: #f5f7fa;
-            color: var(--dark);
-            line-height: 1.6;
-        }
-        
-        header {
-            background-color: var(--primary);
-            color: white;
-            padding: 1.5rem;
-            text-align: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        
-        h1 {
-            margin-bottom: 0.5rem;
-        }
-        
-        .subtitle {
-            font-size: 1.1rem;
-            opacity: 0.9;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-        
-        .category {
-            margin-bottom: 2.5rem;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            overflow: hidden;
-        }
-        
-        .category-header {
-            background-color: var(--secondary);
-            color: white;
-            padding: 1rem 1.5rem;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .category-header h2 {
-            margin: 0;
-        }
-        
-        .category-content {
-            padding: 1.5rem;
-            display: none;
-        }
-        
-        .category.active .category-content {
-            display: block;
-        }
-        
-        .flashcards {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 1.5rem;
-        }
-        
-        .card {
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
-            overflow: hidden;
-            transition: transform 0.3s, box-shadow 0.3s;
-            cursor: pointer;
-        }
-        
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-        
-        .card-front, .card-back {
-            padding: 1.5rem;
-            min-height: 200px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-        
-        .card-front {
-            background-color: var(--light);
-            border-bottom: 1px solid #ddd;
-        }
-        
-        .card-back {
-            background-color: white;
-            display: none;
-        }
-        
-        .card.flipped .card-front {
-            display: none;
-        }
-        
-        .card.flipped .card-back {
-            display: flex;
-        }
-        
-        .card h3 {
-            margin-bottom: 0.5rem;
-            color: var(--primary);
-        }
-        
-        .card p {
-            margin-bottom: 0.5rem;
-        }
-        
-        .card ul {
-            margin-left: 1.5rem;
-        }
-        
-        .card li {
-            margin-bottom: 0.3rem;
-        }
-        
-        .icon {
-            font-size: 1.5rem;
-            transition: transform 0.3s;
-        }
-        
-        .category.active .icon {
-            transform: rotate(180deg);
-        }
-        
-        .tip {
-            background-color: #fff9e6;
-            border-left: 4px solid #f1c40f;
-            padding: 1rem;
-            margin: 1.5rem 0;
-            border-radius: 0 4px 4px 0;
-        }
-        
-        footer {
-            text-align: center;
-            padding: 1.5rem;
-            margin-top: 2rem;
-            background-color: var(--dark);
-            color: white;
-        }
-        
-        @media (max-width: 768px) {
-            .flashcards {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Flashcards + Quiz — Verkoop 4O&L</title>
+<style>
+  :root{
+    --bg:#071023; --card:#071a2a; --accent:#8b5cf6; --muted:#9fb3c8;
+  }
+  *{box-sizing:border-box}
+  body{margin:0; font-family:Inter,system-ui,Segoe UI,Roboto,Arial; background:
+    radial-gradient(600px 300px at 10% 10%, rgba(139,92,246,0.06),transparent 6%),
+    var(--bg); color:#e8f0fb; display:flex; align-items:center; justify-content:center; padding:22px; min-height:100vh;}
+  .app{width:100%; max-width:1100px; background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.04)); border-radius:14px; padding:20px; display:grid; grid-template-columns:1fr 340px; gap:18px;}
+  header{grid-column:1/-1; display:flex; justify-content:space-between; align-items:center; gap:12px}
+  header h1{margin:0;font-size:18px}
+  .card-area{perspective:1400px; display:flex; align-items:center; justify-content:center; min-height:420px;}
+  .card{width:100%; max-width:760px; height:400px; border-radius:12px; transform-style:preserve-3d; transition:transform 600ms cubic-bezier(.2,.9,.25,1); cursor:pointer; box-shadow:0 20px 40px rgba(2,6,23,0.6); position:relative; background:linear-gradient(180deg, rgba(255,255,255,0.015), rgba(0,0,0,0.02)); border:1px solid rgba(255,255,255,0.03)}
+  .card.flipped{transform:rotateY(180deg)}
+  .face{position:absolute; inset:0; padding:28px; backface-visibility:hidden; display:flex; flex-direction:column; gap:12px; border-radius:12px}
+  .front{justify-content:center; align-items:center}
+  .q{font-size:22px; text-align:center; line-height:1.25}
+  .meta{color:var(--muted); font-size:13px; text-align:center}
+  .back{transform:rotateY(180deg); overflow:auto; background:linear-gradient(180deg, rgba(139,92,246,0.06), rgba(6,182,212,0.02)); border:1px solid rgba(139,92,246,0.08)}
+  .a{font-size:15px; line-height:1.45}
+  .sidebar{background:rgba(255,255,255,0.02); padding:14px; border-radius:10px; display:flex; flex-direction:column; gap:12px; min-height:420px}
+  .controls{display:flex; gap:8px; flex-wrap:wrap}
+  button{background:none;border:1px solid rgba(255,255,255,0.06); color:inherit; padding:8px 10px; border-radius:8px; cursor:pointer}
+  button.primary{background:linear-gradient(90deg,var(--accent),#06b6d4); color:#04131a; border:0}
+  .deck-list{overflow:auto; max-height:180px; display:flex; flex-direction:column; gap:6px}
+  .deck-item{padding:8px;border-radius:8px; display:flex; justify-content:space-between; gap:8px; cursor:pointer; border:1px solid rgba(255,255,255,0.02)}
+  .deck-item.active{background:linear-gradient(90deg, rgba(139,92,246,0.08), rgba(6,182,212,0.03))}
+  .prog{height:10px;background:rgba(255,255,255,0.03); border-radius:999px; overflow:hidden}
+  .prog > i{display:block;height:100%; background:linear-gradient(90deg,var(--accent),#06b6d4); width:0%}
+  .footer{grid-column:1/-1; text-align:right; color:var(--muted); font-size:13px}
+  .quiz-panel{display:flex; gap:8px; align-items:center; flex-wrap:wrap}
+  input[type=number]{width:78px;padding:6px;border-radius:6px;border:1px solid rgba(255,255,255,0.05);background:transparent;color:inherit}
+  @media(max-width:980px){.app{grid-template-columns:1fr;}.sidebar{order:2}}
+</style>
 </head>
 <body>
+  <main class="app" aria-live="polite">
     <header>
-        <h1>Verpakkings- en Labelkennis</h1>
-        <p class="subtitle">Studiehulp voor de toets - Klik op de kaartjes om de antwoorden te zien</p>
+      <div>
+        <h1>Flashcards & Quiz — KERST VERKOOP 4O&L</h1>
+        <div style="color:var(--muted);font-size:13px">Klik kaart = flip • → / spatie = volgende • Quizmodus + score</div>
+      </div>
+      <div style="text-align:right">
+        <div id="counter">Kaart 1 / 40</div>
+        <div id="deckInfo" style="color:var(--muted);font-size:13px">Deck: Volledige exam-kaarten</div>
+      </div>
     </header>
-    
-    <div class="container">
-        <div class="tip">
-            <strong>Studietip:</strong> Klik op de kaartjes om de antwoorden te zien. Probeer eerst zelf het antwoord te bedenken voordat je de kaart omdraait!
+
+    <section class="card-area">
+      <article id="card" class="card" tabindex="0" role="button" aria-pressed="false" aria-label="Flip card">
+        <div class="face front">
+          <div class="q" id="question">Laden...</div>
+          <div class="meta">Klik om het antwoord te zien</div>
         </div>
-        
-        <!-- Soorten verpakkingen -->
-        <div class="category active">
-            <div class="category-header">
-                <h2>Soorten verpakkingen</h2>
-                <span class="icon">▼</span>
-            </div>
-            <div class="category-content">
-                <div class="flashcards">
-                    <div class="card">
-                        <div class="card-front">
-                            <h3>Tertiaire verpakking</h3>
-                            <p>Wat is een tertiaire verpakking?</p>
-                        </div>
-                        <div class="card-back">
-                            <p>Artikelen worden opgeslagen in een grootverpakking of <strong>colli</strong>. Dat is vaak hetzelfde als een <strong>omverpakking</strong>. De meeste winkels halen de artikelen uit de omverpakking voor ze die in de winkel presenteren.</p>
-                            <p>Voorbeeld: <strong>krimpfolie</strong> - een plastic folie die bij hoge temperaturen wordt gesmolten.</p>
-                        </div>
-                    </div>
-                    
-                    <div class="card">
-                        <div class="card-front">
-                            <h3>Secundaire verpakking</h3>
-                            <p>Wat is een secundaire verpakking?</p>
-                        </div>
-                        <div class="card-back">
-                            <p>Wanneer de omverpakking (gedeeltelijk) wordt verwijderd, dan worden de artikelen gepresenteerd in de <strong>secundaire verpakking</strong>.</p>
-                            <p>Soms wordt er een extra folie aangeboden voor een multiverpakking.</p>
-                        </div>
-                    </div>
-                    
-                    <div class="card">
-                        <div class="card-front">
-                            <h3>Primaire verpakking</h3>
-                            <p>Wat is een primaire verpakking?</p>
-                        </div>
-                        <div class="card-back">
-                            <p>De <strong>consumptieverpakking</strong> is de verpakking waarin het artikel in de winkel aan de klant wordt aangeboden.</p>
-                            <p>Dit is de verpakking die de consument uiteindelijk mee naar huis neemt.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="face back">
+          <div class="a" id="answer">Laden...</div>
+          <div style="flex:1"></div>
+          <div style="text-align:right;color:rgba(0,0,0,0.6);font-size:13px">Klik opnieuw of gebruik toetsen</div>
         </div>
-        
-        <!-- Diefstalpreventie -->
-        <div class="category">
-            <div class="category-header">
-                <h2>Diefstalpreventie</h2>
-                <span class="icon">▼</span>
-            </div>
-            <div class="category-content">
-                <div class="flashcards">
-                    <div class="card">
-                        <div class="card-front">
-                            <h3>Artikelbeveiliging</h3>
-                            <p>Welke vormen van artikelbeveiliging ken je?</p>
-                        </div>
-                        <div class="card-back">
-                            <p>Verschillende manieren om artikelen te beveiligen tegen winkeldiefstal:</p>
-                            <ul>
-                                <li>Elektronische artikelbewaking (EAS)</li>
-                                <li>Beveiligingslabels en -tags</li>
-                                <li>Spiegelbewaking</li>
-                                <li>Beveiligingspersoneel</li>
-                                <li>Dummy verpakkingen</li>
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <div class="card">
-                        <div class="card-front">
-                            <h3>Dummy verpakking</h3>
-                            <p>Wat is een dummy verpakking?</p>
-                        </div>
-                        <div class="card-back">
-                            <p>Sommige grootwarenhuizen leggen een dummy verpakking (lege verpakking) in de winkel. De klant kan het product aan de hand van die lege verpakking beoordelen en het artikel dan aan de kassa ophalen.</p>
-                            <p>Dit is een manier om diefstal te voorkomen zonder dure beveiligingssystemen.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+      </article>
+    </section>
+
+    <aside class="sidebar" aria-label="Controls">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div><strong id="deckName">Deck: Volledige exam-kaarten</strong><br><small id="deckCount" style="color:var(--muted)">40 kaarten</small></div>
+        <div>
+          <button id="prevBtn" title="Vorige (←)">←</button>
+          <button id="nextBtn" title="Volgende (→ / spatie)">→</button>
         </div>
-        
-        <!-- Prijzen -->
-        <div class="category">
-            <div class="category-header">
-                <h2>Prijzen</h2>
-                <span class="icon">▼</span>
-            </div>
-            <div class="category-content">
-                <div class="flashcards">
-                    <div class="card">
-                        <div class="card-front">
-                            <h3>Soorten prijzen</h3>
-                            <p>Welke manieren van prijzen ken je?</p>
-                        </div>
-                        <div class="card-back">
-                            <ul>
-                                <li><strong>Afprijzen:</strong> De prijs verlagen</li>
-                                <li><strong>Uitprijzen:</strong> De prijs op het artikel zetten</li>
-                                <li><strong>Voorprijzen:</strong> De prijs vooraf bepalen</li>
-                                <li><strong>Omprijzen:</strong> De prijs aanpassen</li>
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <div class="card">
-                        <div class="card-front">
-                            <h3>Regels voor prijzen</h3>
-                            <p>Welke regels zijn belangrijk bij het prijzen?</p>
-                        </div>
-                        <div class="card-back">
-                            <ul>
-                                <li>Verplicht valuta (euro-teken) vermelden</li>
-                                <li>Duidelijke omschrijving: per kilo, per stuk, per gram</li>
-                                <li>Nooit meer dan één etiket op een artikel plakken</li>
-                                <li>Prijsetiket niet over belangrijke informatie plakken (houdbaarheidsdatum, ingrediënten)</li>
-                                <li>Zorgen dat schaplabels met prijsinformatie juist zijn en op de correcte plaats zitten</li>
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <div class="card">
-                        <div class="card-front">
-                            <h3>Prijzen hulpmiddelen</h3>
-                            <p>Welke hulpmiddelen worden gebruikt voor prijzen?</p>
-                        </div>
-                        <div class="card-back">
-                            <p>Een systeem met een rol met etiketjes en een rolmechanisme. Als je aan het rolmechanisme draait, stel je de prijs in met cijfers en letters. Dat mechanisme heeft een of meerdere lijnen waarop je de tekens kunt aanpassen.</p>
-                            <p>Als je in het handvat drukt, druk je de ingestelde prijs op het etiket en kun je het zelfklevende etiket eenvoudig op het artikel plakken.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+      </div>
+
+      <div class="controls">
+        <button id="flipBtn">Flip</button>
+        <button id="shuffleBtn">Shuffle</button>
+        <button id="resetBtn">Reset</button>
+        <button id="showAllBtn">Toon alle antwoorden</button>
+      </div>
+
+      <div>
+        <label style="font-size:13px;color:var(--muted)">Voortgang</label>
+        <div class="prog"><i id="progBar"></i></div>
+      </div>
+
+      <div>
+        <label style="font-size:13px;color:var(--muted)">Kaarten</label>
+        <div class="deck-list" id="deckList" role="list"></div>
+      </div>
+
+      <hr style="border:0;border-top:1px solid rgba(255,255,255,0.02)">
+
+      <div>
+        <div style="font-weight:600">Quizmodus</div>
+        <div class="quiz-panel">
+          <label>Vragen:</label>
+          <input id="quizCount" type="number" min="1" max="40" value="10"/>
+          <button id="startQuizBtn" class="primary">Start quiz</button>
+          <button id="endQuizBtn">Stop</button>
         </div>
-        
-        <!-- Milieulabels -->
-        <div class="category">
-            <div class="category-header">
-                <h2>Milieulabels</h2>
-                <span class="icon">▼</span>
-            </div>
-            <div class="category-content">
-                <div class="flashcards">
-                    <div class="card">
-                        <div class="card-front">
-                            <h3>Biogarantielabel</h3>
-                            <p>Wat betekent het Biogarantielabel?</p>
-                        </div>
-                        <div class="card-back">
-                            <p>Het label garandeert dat het product <strong>biologisch</strong> geteeld is: zonder pesticiden, zonder chemische meststoffen.</p>
-                            <p>Je vindt dat label onder meer op voedingsmiddelen, etherische oliën en verven.</p>
-                        </div>
-                    </div>
-                    
-                    <div class="card">
-                        <div class="card-front">
-                            <h3>Energielabel</h3>
-                            <p>Wat betekent het energielabel?</p>
-                        </div>
-                        <div class="card-back">
-                            <p>Het label geeft informatie over het <strong>energiegebruik</strong>: hoe efficiënt en hoe zuinig het apparaat, de auto of het gebouw met energie en/of water omspringt.</p>
-                            <p>Er zijn zeven klassen, van A (meest efficiënt) tot G (minst efficiënt).</p>
-                        </div>
-                    </div>
-                    
-                    <div class="card">
-                        <div class="card-front">
-                            <h3>EU Ecolabel</h3>
-                            <p>Wat betekent het EU Ecolabel?</p>
-                        </div>
-                        <div class="card-back">
-                            <p>Producenten en invoerders van bepaalde producten kunnen dat label aanvragen als hun producten of diensten ecologisch zijn, dat wil zeggen als hun <strong>impact</strong> op milieu en de gezondheid minimaal is.</p>
-                        </div>
-                    </div>
-                    
-                    <div class="card">
-                        <div class="card-front">
-                            <h3>FSC-label</h3>
-                            <p>Wat betekent het FSC-label?</p>
-                        </div>
-                        <div class="card-back">
-                            <p>Het label, een afkorting voor Forest Stewardship Council, staat vermeld op hout- en papierproducten. Het label garandeert dat het hout afkomstig is uit <strong>verantwoord</strong> beheerde bossen.</p>
-                        </div>
-                    </div>
-                    
-                    <div class="card">
-                        <div class="card-front">
-                            <h3>Groene Punt</h3>
-                            <p>Wat betekent het Groene Punt?</p>
-                        </div>
-                        <div class="card-back">
-                            <p>De <strong>producent</strong> betaalt voor de inzameling en sortering van verpakkingsafval een bijdrage aan <strong>Groene Punt</strong>. Dat initiatief ziet erop toe dat het afval verplicht wordt teruggenomen, zodat het (gedeeltelijk) hergebruikt of gerecycleerd wordt.</p>
-                        </div>
-                    </div>
-                    
-                    <div class="card">
-                        <div class="card-front">
-                            <h3>Niet in de vuilnisbak</h3>
-                            <p>Wat betekent het "niet in de vuilnisbak" logo?</p>
-                        </div>
-                        <div class="card-back">
-                            <p>Het logo geeft aan dat je het product niet gewoon in de vuilnisbak mag gooien, maar dat het <strong>apart</strong> moet worden opgehaald, omdat het schadelijke stoffen bevat.</p>
-                            <p>Het logo moet op alle (herlaadbare) batterijen staan die lood, cadmium of kwik bevatten.</p>
-                        </div>
-                    </div>
-                    
-                    <div class="card">
-                        <div class="card-front">
-                            <h3>Recycleerbaarheid</h3>
-                            <p>Wat betekent het recycleerbaarheid-logo?</p>
-                        </div>
-                        <div class="card-back">
-                            <p>Dit logo heeft twee betekenissen:</p>
-                            <ul>
-                                <li>Het duidt aan dat de verpakking of het product uit gerecycleerd materiaal bestaat</li>
-                                <li>Het geeft aan dat de verpakking of het product recycleerbaar is</li>
-                            </ul>
-                            <p>Soms staat er ook hoeveel procent gerecycleerd materiaal het bevat.</p>
-                        </div>
-                    </div>
-                    
-                    <div class="card">
-                        <div class="card-front">
-                            <h3>Tidy man</h3>
-                            <p>Wat betekent het Tidy man logo?</p>
-                        </div>
-                        <div class="card-back">
-                            <p>Het logo moedigt consumenten aan om de verpakking en/of het product in de afvalcontainer te gooien. Het logo is niet verplicht.</p>
-                            <p>Dit logo wordt ook wel <em>tidy man</em> genoemd.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Voedingslabels -->
-        <div class="category">
-            <div class="category-header">
-                <h2>Voedingslabels</h2>
-                <span class="icon">▼</span>
-            </div>
-            <div class="category-content">
-                <div class="flashcards">
-                    <div class="card">
-                        <div class="card-front">
-                            <h3>Soorten voedingslabels</h3>
-                            <p>Welke soorten voedingslabels zijn er?</p>
-                        </div>
-                        <div class="card-back">
-                            <ul>
-                                <li><strong>Neutrale labels:</strong> Geven geen waardeoordeel, consument moet informatie zelf interpreteren</li>
-                                <li><strong>Positieve labels:</strong> Producten zijn een gezonde(re) keuze binnen de productcategorie</li>
-                                <li><strong>Labels met kleurcodes:</strong> Toetsen het gehalte van bepaalde voedingsstoffen aan criteria met kleuraanduiding</li>
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <div class="card">
-                        <div class="card-front">
-                            <h3>Nutri-Score</h3>
-                            <p>Wat is de Nutri-Score?</p>
-                        </div>
-                        <div class="card-back">
-                            <p>De Nutri-Score is een label dat een globale score geeft met bijbehorende kleur (A t/m E).</p>
-                            <p>Het houdt rekening met de aanwezigheid van voedingsstoffen waarvan de inname best wordt beperkt zoals suiker, totaal vet, verzadigd vet en zout.</p>
-                            <p>Bedrijven zijn niet verplicht om de Nutri-Score te vermelden.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- FSC-labels -->
-        <div class="category">
-            <div class="category-header">
-                <h2>FSC-labels</h2>
-                <span class="icon">▼</span>
-            </div>
-            <div class="category-content">
-                <div class="flashcards">
-                    <div class="card">
-                        <div class="card-front">
-                            <h3>FSC 100%</h3>
-                            <p>Wat betekent FSC 100%?</p>
-                        </div>
-                        <div class="card-back">
-                            <p>Het product is volledig gemaakt uit hout of vezels uit een FSC-gecertificeerd bos.</p>
-                        </div>
-                    </div>
-                    
-                    <div class="card">
-                        <div class="card-front">
-                            <h3>FSC MIX</h3>
-                            <p>Wat betekent FSC MIX?</p>
-                        </div>
-                        <div class="card-back">
-                            <p>Het product bestaat uit een combinatie van materiaal uit:</p>
-                            <ul>
-                                <li>FSC-gecertificeerde bossen</li>
-                                <li>FSC-gecontroleerde bossen</li>
-                                <li>en/of gerecycleerd materiaal</li>
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <div class="card">
-                        <div class="card-front">
-                            <h3>FSC RECYCLED</h3>
-                            <p>Wat betekent FSC RECYCLED?</p>
-                        </div>
-                        <div class="card-back">
-                            <p>Het product is gemaakt uit 100% gerecycleerd materiaal, waarbij minstens 85% na gebruik door de consument werd gerecycleerd.</p>
-                            <p>Het label wordt vooral gebruikt voor papierproducten, maar kan ook op houtproducten staan.</p>
-                        </div>
-                    </div>
-                    
-                    <div class="card">
-                        <div class="card-front">
-                            <h3>Elementen FSC-label</h3>
-                            <p>Welke elementen maken een correct FSC-label?</p>
-                        </div>
-                        <div class="card-back">
-                            <ol>
-                                <li>FSC-logo</li>
-                                <li>Type label (100%, MIX, RECYCLED)</li>
-                                <li>Omschrijving</li>
-                                <li>Licentienummer</li>
-                                <li>Website (www.fsc.org)</li>
-                            </ol>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <footer>
-        <p>Studiehulp Verpakkings- en Labelkennis - Succes met je toets!</p>
-    </footer>
-    
-    <script>
-        // Categorieën in- en uitklappen
-        document.querySelectorAll('.category-header').forEach(header => {
-            header.addEventListener('click', () => {
-                const category = header.parentElement;
-                category.classList.toggle('active');
-            });
-        });
-        
-        // Kaarten omdraaien
-        document.querySelectorAll('.card').forEach(card => {
-            card.addEventListener('click', () => {
-                card.classList.toggle('flipped');
-            });
-        });
-    </script>
+        <div style="color:var(--muted);font-size:13px;margin-top:8px" id="quizStatus">Geen quiz actief</div>
+      </div>
+    </aside>
+
+    <footer class="footer">Kaarten gebaseerd op jouw bestanden. Bronnen: Thema 1 & Thema 4.  [oai_citation:3‡Thema 1 level 2 VS.pdf](sediment://file_00000000850c71f4bda1536045007ab2)  [oai_citation:4‡Thema 4 level 1 +2 VS.pdf](sediment://file_0000000021bc71f4bcde33daaf2c777d)  [oai_citation:5‡Thema 1 level 2 VS.pdf](sediment://file_00000000850c71f4bda1536045007ab2)</footer>
+  </main>
+
+<script>
+/* ---------- CARDS (gebaseerd op de aangeleverde Thema-bestanden) ---------- */
+/* 40 cards covering Thema 1 lvl2 + Thema 4 lvl1&2 kernbegrippen, prijzen, labels, beveiliging, indeling, marketing, enz. */
+const allCards = [
+{q:"Wat is een assortiment?", a:"Het volledige aanbod aan producten en diensten dat een onderneming verkoopt."},
+{q:"Wat betekent 'breedte' van het assortiment?", a:"Het aantal verschillende productcategorieën die een onderneming aanbiedt."},
+{q:"Wat betekent 'diepte' van het assortiment?", a:"Het aantal soorten of types binnen één productcategorie."},
+{q:"Wat is het verschil tussen kernassortiment en randassortiment?", a:"Kern = hoofdproducten waarvoor klanten komen. Rand = aanvullende producten die het kernassortiment aanvullen."},
+{q:"Wat is lengte en hoogte van assortiment?", a:"Lengte = totaal aantal producten/eenheden. Hoogte = gemiddeld prijsniveau (laag/hoog)."},
+
+{q:"Hoe bepaal je een doelgroep?", a:"Op basis van leeftijd, gender, gedrag en andere kenmerken; belangrijk om reclame en assortiment af te stemmen."},
+{q:"Noem 3 kenmerken van een goede bedrijfsnaam.", a:"Kort, makkelijk te onthouden, onderscheidend en passend bij de doelgroep."},
+{q:"Wat is een slogan en wat moet die doen?", a:"Kort (max ~5 woorden), communiceert voordeel en blijft hangen."},
+
+{q:"Welke vormen van prijzen bestaan er?", a:"Uitprijzen (prijs op product), opprijzen (verhogen), afprijzen (verlagen), omprijzen (anders prijzen), voorprijzen (fabrikantprijs)."},
+{q:"Wat zijn wettelijke regels rond prijsvermelding?", a:"Prijs moet duidelijk, leesbaar en alles-inclusief zijn (btw & taksen), en per eenheid vermeld worden waar nodig."},
+{q:"Wat is 'referentieprijs' bij prijsvermindering?", a:"De oorspronkelijke prijs die in de voorafgaande maand gebruikt werd; verplicht om transparantie te geven bij korting."},
+
+{q:"Welke hulpmiddelen bestaan er om artikelen te prijzen?", a:"EAN-streepjescode, PLU, prijstang, Kimball/textieltang (ridderspoor), elektronisch schaplabel."},
+{q:"Wat doet een EAN/streepjescode?", a:"Scanner leest code en haalt prijs/voorraadgegevens uit kassasysteem; snel en foutarm."},
+{q:"Wat is een PLU-code?", a:"4–5 cijfercode voor bulkproducten zoals groenten & fruit; kassamedewerker voert PLU in."},
+{q:"Hoe werkt een prijstang (etikettering)?", a:"Je stelt cijfers in op het rolmechanisme en drukt een zelfklevend etiket dat je op het artikel plakt."},
+{q:"Wat is een elektronisch schaplabel?", a:"Digitaal prijslabel op schap dat centraal aangepast wordt via computer, handig voor acties."},
+
+{q:"Wat zijn Kimball- of prijskaartjes en waarvoor?", a:"Papieren/plastic kaartjes met ridderspoor, bevestigd aan kleding met textieltang; gebruikt voor textiel."},
+{q:"Voordelen van prijzen met barcode?", a:"Sneller afrekenen, voorraadbeheer, minder fouten, geen prijsstickers op elk stuk."},
+{q:"Probleem als prijs op schap verschilt van kassa?", a:"Nieuwe prijs niet aangepast in systeem, foutieve invoer op schap of kassa."},
+
+{q:"Noem vijf vormen van artikelbeveiliging.", a:"Hardtag, kabeltag, blisterverpakking, kleurklem, elektromagnetisch etiket (AM/RF)."},
+{q:"Wat is een hardtag / kabeltag?", a:"Fysieke beveiliging bevestigd aan artikel; activeert alarm bij poging tot wegnemen zonder verwijderen."},
+{q:"Wat is een 'dummy verpakking' als beveiliging?", a:"Lege verpakking als demonstratiemodel; klant haalt product aan kassa af."},
+
+{q:"Wat is 'ompakken' (packaging) in retail?", a:"Producten uit tertiaire verpakking halen en in secundaire/consumentenverpakking aanbieden (tray, folie)."},
+{q:"Noem milieuvriendelijke verpakkingsopties retailers gebruiken.", a:"Minder folie, herbruikbare zakjes, kleinere etiketten, hersluitbare folies."},
+
+{q:"Noem belangrijke milieulabels en korte uitleg.", a:"EU Ecolabel (laag milieu-impact), FSC (verantwoord hout), Biogarantie (biologisch), Energielabel (A–G), Groene Punt (recyclagebijdrage)."},
+{q:"Wat betekent 'Tidy man' logo?", a:"Moedigt consument aan afval in vuilbak te deponeren (geen straatvuil)."},
+{q:"Wat betekent het 'niet in vuilnisbak' symbool?", a:"Product moet apart ingezameld worden (gevaarlijke stoffen/batterijen)."},
+
+
+{q:"Wat is Nutri-Score en welke parameters gebruikt het?", a:"Voedingslabel met A–E (groen→rood). Houdt rekening met vezels, eiwitten, fruit/groente vs kcal, suiker, zout, verzadigd vet."},
+{q:"Waarom is Nutri-Score nuttig?", a:"Helpt consumenten voedingswaarde snel vergelijken en kan koopgedrag beïnvloeden (gezondere keuzes)."},
+{q:"Zijn fabrikanten verplicht Nutri-Score te tonen?", a:"Nee, in veel landen is het vrijwillig (maar steeds vaker aanbevolen/ingeburgerd)."},
+
+
+{q:"Welke winkelzones bestaan er?", a:"Platina, Goud, Zilver en Brons — geografische zones met verschillende verkoopkracht."},
+{q:"Wat is een 'vrije looproute' vs 'gedwongen looproute'?", a:"Vrije = klant kiest zijn pad; gedwongen = klant wordt gestuurd langs bepaalde route (bv. IKEA)."},
+{q:"Noem de drie winkeloppervlaktes die je op een grondplan aantoont.", a:"Verkoopoppervlakte, kassaoppervlakte en operationele oppervlakte (achter de schermen)."},
+{q:"Wat is 'instore beleving'?", a:"Zintuigelijke ervaring in winkel: muziek, geur, verlichting, presentatie die beïnvloedt hoe klant zich voelt."},
+
+{q:"Wat is geurmarketing?", a:"Gerichte verspreiding van geur om sfeer te creëren en koopgedrag te beïnvloeden."},
+{q:"Wat zijn impulsaankopen en waar vind je ze vaak?", a:"Ongeplande aankopen; vaak bij kassa of opvallende displays."},
+{q:"Noem 3 tips om verleidingen in de supermarkt te weerstaan.", a:"Maak een boodschappenlijst, ga niet met honger, ga op vaste momenten (2–3x per week)."},
+
+
+{q:"Wat is het doel van een schappenplan (planogram)?", a:"Overzichtelijke productplaatsing die logica voor klant creëert en verkoop stimuleert."},
+{q:"Wat is tijdelijke vs vaste artikelpresentatie?", a:"Vaste = permanente plaatsing; Tijdelijke = promo/displays die regelmatig wisselen om aandacht te trekken."},
+{q:"Wat is een 'shelf-tester' of sample?", a:"Kleine testhoeveelheid of demo die klanten laat proeven/proberen voordat kopen."},
+
+{q:"Waarom plakt een winkel prijs per eenheid (kg/l)?", a:"Om klanten duidelijkheid te geven en vergelijking tussen formaten/producten mogelijk te maken (wettelijk verplicht voor veel producten)."},
+{q:"Wat is 'voorprijzen'?", a:"Prijs die fabrikant al op product zet; retailer kan dit overnemen of aanpassen."},
+{q:"Wat is 'omprijzen'?", a:"Wanneer de winkelier een artikel een andere prijs geeft dan eerder vermeld."},
+
+{q:"Wat toon je op een elektronisch schaplabel?", a:"Prijs, promo-info en soms voorraadindicatie; centraal aanpasbaar."},
+{q:"Noem een nadeel van handmatig prijzen met stickers.", a:"Tijdrovend, kans op fouten, kan label info bedekken of product beschadigen bij verwijderen."}
+];
+// end cards
+
+/* ---------- App state ---------- */
+let deck = [...allCards];
+let idx = 0;
+let quiz = {active:false, sequence:[], current:0, score:0, total:0};
+
+/* UI refs */
+const qEl = document.getElementById('question');
+const aEl = document.getElementById('answer');
+const cardEl = document.getElementById('card');
+const counterEl = document.getElementById('counter');
+const prog = document.getElementById('progBar');
+const deckList = document.getElementById('deckList');
+const deckCount = document.getElementById('deckCount');
+const quizStatus = document.getElementById('quizStatus');
+const quizCountInput = document.getElementById('quizCount');
+
+/* Render functions */
+function renderCard(){
+  const item = deck[idx];
+  qEl.textContent = item.q;
+  aEl.textContent = item.a;
+  counterEl.textContent = `Kaart ${idx+1} / ${deck.length}`;
+  prog.style.width = `${Math.round(((idx+1)/deck.length)*100)}%`;
+  Array.from(deckList.children).forEach((el,i)=> el.classList.toggle('active', i===idx));
+  cardEl.classList.remove('flipped'); cardEl.setAttribute('aria-pressed','false');
+}
+function buildList(){
+  deckList.innerHTML = '';
+  deck.forEach((c,i)=>{
+    const it = document.createElement('div');
+    it.className = 'deck-item' + (i===idx ? ' active' : '');
+    it.innerHTML = `<div style="font-size:14px">${i+1}. ${c.q.slice(0,48)}${c.q.length>48?'…':''}</div>
+                    <div style="font-size:12px;color:var(--muted)">${c.a.slice(0,48)}${c.a.length>48?'…':''}</div>`;
+    it.onclick = ()=>{ idx = i; renderCard(); };
+    deckList.appendChild(it);
+  });
+  deckCount.textContent = `${deck.length} kaarten`;
+}
+
+/* Controls */
+function nextCard(){ if(quiz.active){ quizNext(); return } idx = (idx+1)%deck.length; renderCard(); }
+function prevCard(){ if(quiz.active){ /* ignore */ return } idx = (idx-1+deck.length)%deck.length; renderCard(); }
+function flipCard(){ cardEl.classList.toggle('flipped'); const is=cardEl.classList.contains('flipped'); cardEl.setAttribute('aria-pressed',String(is)); }
+
+/* Shuffle & reset */
+document.getElementById('shuffleBtn').onclick = ()=>{
+  for(let i=deck.length-1;i>0;i--){ const j = Math.floor(Math.random()*(i+1)); [deck[i],deck[j]]=[deck[j],deck[i]];}
+  idx=0; buildList(); renderCard();
+};
+document.getElementById('resetBtn').onclick = ()=>{
+  deck = [...allCards]; idx=0; buildList(); renderCard();
+};
+document.getElementById('flipBtn').onclick = flipCard;
+document.getElementById('nextBtn').onclick = nextCard;
+document.getElementById('prevBtn').onclick = prevCard;
+document.getElementById('showAllBtn').onclick = ()=>{
+  // quick autoplay flip through answers
+  let c=0; const orig=idx;
+  (function loop(){ if(c>=deck.length){ idx=orig; renderCard(); return;} idx=c; renderCard(); cardEl.classList.add('flipped'); c++; setTimeout(()=>{ cardEl.classList.remove('flipped'); setTimeout(loop,250); },900); })();
+};
+
+/* Card interactions */
+cardEl.addEventListener('click', flipCard);
+cardEl.addEventListener('keydown', (e)=>{ if(e.key==='Enter' || e.key===' ') { e.preventDefault(); flipCard(); }});
+window.addEventListener('keydown',(e)=>{
+  if(e.key==='ArrowRight' || e.key===' ') { e.preventDefault(); nextCard(); }
+  if(e.key==='ArrowLeft') { prevCard(); }
+});
+
+/* Touch swipe */
+let startX=null;
+cardEl.addEventListener('touchstart', e=> startX = e.changedTouches[0].clientX, {passive:true});
+cardEl.addEventListener('touchend', e=>{
+  if(startX===null) return; const dx = e.changedTouches[0].clientX - startX;
+  if(Math.abs(dx)>40){ if(dx<0) nextCard(); else prevCard(); } else flipCard();
+  startX=null;
+}, {passive:true});
+
+/* ---------- QUIZ MODE ---------- */
+function startQuiz(){
+  const n = Math.min(Math.max(1, parseInt(quizCountInput.value)||10), deck.length);
+  const pool = [...deck];
+  // shuffle pool and pick n
+  for(let i=pool.length-1;i>0;i--){ const j = Math.floor(Math.random()*(i+1)); [pool[i],pool[j]]=[pool[j],pool[i]];}
+  quiz.sequence = pool.slice(0,n);
+  quiz.active = true; quiz.current = 0; quiz.score = 0; quiz.total = n;
+  quizStatus.textContent = `Quiz actief — vraag 1 van ${n} • Score: 0`;
+  // show first quiz card
+  showQuizCard();
+}
+function endQuiz(){
+  quiz.active = false;
+  quizStatus.textContent = `Quiz gestopt. Laatste score: ${quiz.score} / ${quiz.total}`;
+  // restore normal deck view
+  deck = [...allCards]; idx = 0; buildList(); renderCard();
+}
+function showQuizCard(){
+  if(!quiz.active) return;
+  const card = quiz.sequence[quiz.current];
+  qEl.textContent = card.q;
+  aEl.textContent = "(klik om antwoord te zien)"; // hide answer until flip; but flip will show real answer
+  cardEl.classList.remove('flipped'); cardEl.setAttribute('aria-pressed','false');
+  counterEl.textContent = `Quiz ${quiz.current+1} / ${quiz.total}`;
+  prog.style.width = `${Math.round(((quiz.current)/quiz.total)*100)}%`;
+}
+function quizNext(){
+  // when in quiz mode, pressing next means mark as incorrect (skip) — we use confirm flow: user flips to see answer then chooses correct/incorrect via prompt
+  if(!quiz.active) { idx = (idx+1)%deck.length; renderCard(); return; }
+  // show answer (flip)
+  flipCard();
+  // small prompt for marking correctness (simple): show confirm dialog (ok = correct)
+  setTimeout(()=> {
+    const correct = confirm("Had je het antwoord goed? OK = ja, Cancel = nee");
+    if(correct) quiz.score++;
+    quiz.current++;
+    if(quiz.current >= quiz.total){
+      // finish
+      quiz.active = false;
+      quizStatus.textContent = `Quiz klaar — Score: ${quiz.score} / ${quiz.total}`;
+      alert(`Quiz klaar!\nScore: ${quiz.score} / ${quiz.total}`);
+      // restore deck
+      deck = [...allCards]; idx = 0; buildList(); renderCard();
+    } else {
+      quizStatus.textContent = `Quiz actief — vraag ${quiz.current+1} van ${quiz.total} • Score: ${quiz.score}`;
+      showQuizCard();
+    }
+  }, 300);
+}
+
+/* Bind quiz buttons */
+document.getElementById('startQuizBtn').onclick = ()=> {
+  startQuiz();
+};
+document.getElementById('endQuizBtn').onclick = ()=> {
+  endQuiz();
+};
+
+/* When user flips during quiz, show real answer */
+cardEl.addEventListener('click', ()=>{
+  if(quiz.active && cardEl.classList.contains('flipped')){
+    // show real answer
+    aEl.textContent = quiz.sequence[quiz.current].a;
+  } else if(!quiz.active && cardEl.classList.contains('flipped')){
+    // show normal answer
+    aEl.textContent = deck[idx].a;
+  }
+});
+
+/* Keyboard: during quiz, space/right = reveal+mark move */
+window.addEventListener('keydown', (e)=>{
+  if(quiz.active && (e.key===' ' || e.key==='ArrowRight')){
+    e.preventDefault();
+    // if not flipped, flip (to show answer); if flipped, trigger quizNext flow (mark)
+    if(!cardEl.classList.contains('flipped')) { flipCard(); aEl.textContent = quiz.sequence[quiz.current].a; }
+    else { quizNext(); }
+  }
+});
+
+/* Init */
+buildList();
+renderCard();
+setTimeout(()=>cardEl.focus(),300);
+</script>
 </body>
 </html>
