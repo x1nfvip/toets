@@ -1,344 +1,257 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="nl">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Flashcards + Quiz — Verkoop 4O&L</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verkoop Flashcards</title>
+
 <style>
-  :root{
-    --bg:#071023; --card:#071a2a; --accent:#8b5cf6; --muted:#9fb3c8;
-  }
-  *{box-sizing:border-box}
-  body{margin:0; font-family:Inter,system-ui,Segoe UI,Roboto,Arial; background:
-    radial-gradient(600px 300px at 10% 10%, rgba(139,92,246,0.06),transparent 6%),
-    var(--bg); color:#e8f0fb; display:flex; align-items:center; justify-content:center; padding:22px; min-height:100vh;}
-  .app{width:100%; max-width:1100px; background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.04)); border-radius:14px; padding:20px; display:grid; grid-template-columns:1fr 340px; gap:18px;}
-  header{grid-column:1/-1; display:flex; justify-content:space-between; align-items:center; gap:12px}
-  header h1{margin:0;font-size:18px}
-  .card-area{perspective:1400px; display:flex; align-items:center; justify-content:center; min-height:420px;}
-  .card{width:100%; max-width:760px; height:400px; border-radius:12px; transform-style:preserve-3d; transition:transform 600ms cubic-bezier(.2,.9,.25,1); cursor:pointer; box-shadow:0 20px 40px rgba(2,6,23,0.6); position:relative; background:linear-gradient(180deg, rgba(255,255,255,0.015), rgba(0,0,0,0.02)); border:1px solid rgba(255,255,255,0.03)}
-  .card.flipped{transform:rotateY(180deg)}
-  .face{position:absolute; inset:0; padding:28px; backface-visibility:hidden; display:flex; flex-direction:column; gap:12px; border-radius:12px}
-  .front{justify-content:center; align-items:center}
-  .q{font-size:22px; text-align:center; line-height:1.25}
-  .meta{color:var(--muted); font-size:13px; text-align:center}
-  .back{transform:rotateY(180deg); overflow:auto; background:linear-gradient(180deg, rgba(139,92,246,0.06), rgba(6,182,212,0.02)); border:1px solid rgba(139,92,246,0.08)}
-  .a{font-size:15px; line-height:1.45}
-  .sidebar{background:rgba(255,255,255,0.02); padding:14px; border-radius:10px; display:flex; flex-direction:column; gap:12px; min-height:420px}
-  .controls{display:flex; gap:8px; flex-wrap:wrap}
-  button{background:none;border:1px solid rgba(255,255,255,0.06); color:inherit; padding:8px 10px; border-radius:8px; cursor:pointer}
-  button.primary{background:linear-gradient(90deg,var(--accent),#06b6d4); color:#04131a; border:0}
-  .deck-list{overflow:auto; max-height:180px; display:flex; flex-direction:column; gap:6px}
-  .deck-item{padding:8px;border-radius:8px; display:flex; justify-content:space-between; gap:8px; cursor:pointer; border:1px solid rgba(255,255,255,0.02)}
-  .deck-item.active{background:linear-gradient(90deg, rgba(139,92,246,0.08), rgba(6,182,212,0.03))}
-  .prog{height:10px;background:rgba(255,255,255,0.03); border-radius:999px; overflow:hidden}
-  .prog > i{display:block;height:100%; background:linear-gradient(90deg,var(--accent),#06b6d4); width:0%}
-  .footer{grid-column:1/-1; text-align:right; color:var(--muted); font-size:13px}
-  .quiz-panel{display:flex; gap:8px; align-items:center; flex-wrap:wrap}
-  input[type=number]{width:78px;padding:6px;border-radius:6px;border:1px solid rgba(255,255,255,0.05);background:transparent;color:inherit}
-  @media(max-width:980px){.app{grid-template-columns:1fr;}.sidebar{order:2}}
+    body {
+        margin: 0;
+        background: #202020;
+        color: white;
+        font-family: Arial, sans-serif;
+    }
+
+    header {
+        background: #2d2d2d;
+        padding: 15px;
+        text-align: center;
+        font-weight: bold;
+        font-size: 20px;
+        border-bottom: 1px solid #444;
+    }
+
+    #menu {
+        display: flex;
+        flex-direction: column;
+        padding: 20px;
+        gap: 15px;
+    }
+
+    .menu-btn {
+        padding: 18px;
+        background: #3a3a3a;
+        border: none;
+        color: white;
+        font-size: 17px;
+        border-radius: 8px;
+        cursor: pointer;
+        text-align: center;
+    }
+
+    .menu-btn:hover {
+        background: #4d4d4d;
+    }
+
+    #flashcard-area {
+        display: none;
+        height: calc(100vh - 120px);
+        padding: 15px;
+        text-align: center;
+    }
+
+    .card {
+        background: #333;
+        border-radius: 10px;
+        padding: 25px;
+        height: 60%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        margin-bottom: 20px;
+    }
+
+    .buttons {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    button {
+        width: 48%;
+        padding: 15px;
+        border: none;
+        background: #505050;
+        color: white;
+        border-radius: 8px;
+        font-size: 16px;
+    }
+
+    button:hover {
+        background: #5f5f5f;
+    }
+
+    #back-btn {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background: #444;
+        border-radius: 6px;
+        padding: 10px;
+        font-size: 14px;
+        display: none;
+    }
 </style>
 </head>
+
 <body>
-  <main class="app" aria-live="polite">
-    <header>
-      <div>
-        <h1>Flashcards & Quiz — KERST VERKOOP 4O&L</h1>
-        <div style="color:var(--muted);font-size:13px">Klik kaart = flip • → / spatie = volgende • Quizmodus + score</div>
-      </div>
-      <div style="text-align:right">
-        <div id="counter">Kaart 1 / 40</div>
-        <div id="deckInfo" style="color:var(--muted);font-size:13px">Deck: Volledige exam-kaarten</div>
-      </div>
-    </header>
 
-    <section class="card-area">
-      <article id="card" class="card" tabindex="0" role="button" aria-pressed="false" aria-label="Flip card">
-        <div class="face front">
-          <div class="q" id="question">Laden...</div>
-          <div class="meta">Klik om het antwoord te zien</div>
-        </div>
-        <div class="face back">
-          <div class="a" id="answer">Laden...</div>
-          <div style="flex:1"></div>
-          <div style="text-align:right;color:rgba(0,0,0,0.6);font-size:13px">Klik opnieuw of gebruik toetsen</div>
-        </div>
-      </article>
-    </section>
+<header>Flashcards Verkoop – O&L</header>
 
-    <aside class="sidebar" aria-label="Controls">
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <div><strong id="deckName">Deck: Volledige exam-kaarten</strong><br><small id="deckCount" style="color:var(--muted)">40 kaarten</small></div>
-        <div>
-          <button id="prevBtn" title="Vorige (←)">←</button>
-          <button id="nextBtn" title="Volgende (→ / spatie)">→</button>
-        </div>
-      </div>
+<button id="back-btn" onclick="goBack()">⬅ Terug</button>
 
-      <div class="controls">
-        <button id="flipBtn">Flip</button>
-        <button id="shuffleBtn">Shuffle</button>
-        <button id="resetBtn">Reset</button>
-        <button id="showAllBtn">Toon alle antwoorden</button>
-      </div>
+<div id="menu">
+    <button class="menu-btn" onclick="startTheme('t1')">Thema 1 – Level 2</button>
+    <button class="menu-btn" onclick="startTheme('t4l1')">Thema 4 – Level 1</button>
+    <button class="menu-btn" onclick="startTheme('t4l2')">Thema 4 – Level 2</button>
+</div>
 
-      <div>
-        <label style="font-size:13px;color:var(--muted)">Voortgang</label>
-        <div class="prog"><i id="progBar"></i></div>
-      </div>
+<div id="flashcard-area">
+    <div id="card" class="card" onclick="flipCard()">
+        <div id="question"></div>
+        <div id="answer" style="display:none; color:lightgreen;"></div>
+    </div>
 
-      <div>
-        <label style="font-size:13px;color:var(--muted)">Kaarten</label>
-        <div class="deck-list" id="deckList" role="list"></div>
-      </div>
-
-      <hr style="border:0;border-top:1px solid rgba(255,255,255,0.02)">
-
-      <div>
-        <div style="font-weight:600">Quizmodus</div>
-        <div class="quiz-panel">
-          <label>Vragen:</label>
-          <input id="quizCount" type="number" min="1" max="40" value="10"/>
-          <button id="startQuizBtn" class="primary">Start quiz</button>
-          <button id="endQuizBtn">Stop</button>
-        </div>
-        <div style="color:var(--muted);font-size:13px;margin-top:8px" id="quizStatus">Geen quiz actief</div>
-      </div>
-    </aside>
-
-    <footer class="footer">Kaarten gebaseerd op jouw bestanden. Bronnen: Thema 1 & Thema 4.  [oai_citation:3‡Thema 1 level 2 VS.pdf](sediment://file_00000000850c71f4bda1536045007ab2)  [oai_citation:4‡Thema 4 level 1 +2 VS.pdf](sediment://file_0000000021bc71f4bcde33daaf2c777d)  [oai_citation:5‡Thema 1 level 2 VS.pdf](sediment://file_00000000850c71f4bda1536045007ab2)</footer>
-  </main>
+    <div class="buttons">
+        <button onclick="prevCard()">← Vorige</button>
+        <button onclick="nextCard()">Volgende →</button>
+    </div>
+</div>
 
 <script>
-/* ---------- CARDS (gebaseerd op de aangeleverde Thema-bestanden) ---------- */
-/* 40 cards covering Thema 1 lvl2 + Thema 4 lvl1&2 kernbegrippen, prijzen, labels, beveiliging, indeling, marketing, enz. */
-const allCards = [
-{q:"Wat is een assortiment?", a:"Het volledige aanbod aan producten en diensten dat een onderneming verkoopt."},
-{q:"Wat betekent 'breedte' van het assortiment?", a:"Het aantal verschillende productcategorieën die een onderneming aanbiedt."},
-{q:"Wat betekent 'diepte' van het assortiment?", a:"Het aantal soorten of types binnen één productcategorie."},
-{q:"Wat is het verschil tussen kernassortiment en randassortiment?", a:"Kern = hoofdproducten waarvoor klanten komen. Rand = aanvullende producten die het kernassortiment aanvullen."},
-{q:"Wat is lengte en hoogte van assortiment?", a:"Lengte = totaal aantal producten/eenheden. Hoogte = gemiddeld prijsniveau (laag/hoog)."},
 
-{q:"Hoe bepaal je een doelgroep?", a:"Op basis van leeftijd, gender, gedrag en andere kenmerken; belangrijk om reclame en assortiment af te stemmen."},
-{q:"Noem 3 kenmerken van een goede bedrijfsnaam.", a:"Kort, makkelijk te onthouden, onderscheidend en passend bij de doelgroep."},
-{q:"Wat is een slogan en wat moet die doen?", a:"Kort (max ~5 woorden), communiceert voordeel en blijft hangen."},
-
-{q:"Welke vormen van prijzen bestaan er?", a:"Uitprijzen (prijs op product), opprijzen (verhogen), afprijzen (verlagen), omprijzen (anders prijzen), voorprijzen (fabrikantprijs)."},
-{q:"Wat zijn wettelijke regels rond prijsvermelding?", a:"Prijs moet duidelijk, leesbaar en alles-inclusief zijn (btw & taksen), en per eenheid vermeld worden waar nodig."},
-{q:"Wat is 'referentieprijs' bij prijsvermindering?", a:"De oorspronkelijke prijs die in de voorafgaande maand gebruikt werd; verplicht om transparantie te geven bij korting."},
-
-{q:"Welke hulpmiddelen bestaan er om artikelen te prijzen?", a:"EAN-streepjescode, PLU, prijstang, Kimball/textieltang (ridderspoor), elektronisch schaplabel."},
-{q:"Wat doet een EAN/streepjescode?", a:"Scanner leest code en haalt prijs/voorraadgegevens uit kassasysteem; snel en foutarm."},
-{q:"Wat is een PLU-code?", a:"4–5 cijfercode voor bulkproducten zoals groenten & fruit; kassamedewerker voert PLU in."},
-{q:"Hoe werkt een prijstang (etikettering)?", a:"Je stelt cijfers in op het rolmechanisme en drukt een zelfklevend etiket dat je op het artikel plakt."},
-{q:"Wat is een elektronisch schaplabel?", a:"Digitaal prijslabel op schap dat centraal aangepast wordt via computer, handig voor acties."},
-
-{q:"Wat zijn Kimball- of prijskaartjes en waarvoor?", a:"Papieren/plastic kaartjes met ridderspoor, bevestigd aan kleding met textieltang; gebruikt voor textiel."},
-{q:"Voordelen van prijzen met barcode?", a:"Sneller afrekenen, voorraadbeheer, minder fouten, geen prijsstickers op elk stuk."},
-{q:"Probleem als prijs op schap verschilt van kassa?", a:"Nieuwe prijs niet aangepast in systeem, foutieve invoer op schap of kassa."},
-
-{q:"Noem vijf vormen van artikelbeveiliging.", a:"Hardtag, kabeltag, blisterverpakking, kleurklem, elektromagnetisch etiket (AM/RF)."},
-{q:"Wat is een hardtag / kabeltag?", a:"Fysieke beveiliging bevestigd aan artikel; activeert alarm bij poging tot wegnemen zonder verwijderen."},
-{q:"Wat is een 'dummy verpakking' als beveiliging?", a:"Lege verpakking als demonstratiemodel; klant haalt product aan kassa af."},
-
-{q:"Wat is 'ompakken' (packaging) in retail?", a:"Producten uit tertiaire verpakking halen en in secundaire/consumentenverpakking aanbieden (tray, folie)."},
-{q:"Noem milieuvriendelijke verpakkingsopties retailers gebruiken.", a:"Minder folie, herbruikbare zakjes, kleinere etiketten, hersluitbare folies."},
-
-{q:"Noem belangrijke milieulabels en korte uitleg.", a:"EU Ecolabel (laag milieu-impact), FSC (verantwoord hout), Biogarantie (biologisch), Energielabel (A–G), Groene Punt (recyclagebijdrage)."},
-{q:"Wat betekent 'Tidy man' logo?", a:"Moedigt consument aan afval in vuilbak te deponeren (geen straatvuil)."},
-{q:"Wat betekent het 'niet in vuilnisbak' symbool?", a:"Product moet apart ingezameld worden (gevaarlijke stoffen/batterijen)."},
-
-
-{q:"Wat is Nutri-Score en welke parameters gebruikt het?", a:"Voedingslabel met A–E (groen→rood). Houdt rekening met vezels, eiwitten, fruit/groente vs kcal, suiker, zout, verzadigd vet."},
-{q:"Waarom is Nutri-Score nuttig?", a:"Helpt consumenten voedingswaarde snel vergelijken en kan koopgedrag beïnvloeden (gezondere keuzes)."},
-{q:"Zijn fabrikanten verplicht Nutri-Score te tonen?", a:"Nee, in veel landen is het vrijwillig (maar steeds vaker aanbevolen/ingeburgerd)."},
-
-
-{q:"Welke winkelzones bestaan er?", a:"Platina, Goud, Zilver en Brons — geografische zones met verschillende verkoopkracht."},
-{q:"Wat is een 'vrije looproute' vs 'gedwongen looproute'?", a:"Vrije = klant kiest zijn pad; gedwongen = klant wordt gestuurd langs bepaalde route (bv. IKEA)."},
-{q:"Noem de drie winkeloppervlaktes die je op een grondplan aantoont.", a:"Verkoopoppervlakte, kassaoppervlakte en operationele oppervlakte (achter de schermen)."},
-{q:"Wat is 'instore beleving'?", a:"Zintuigelijke ervaring in winkel: muziek, geur, verlichting, presentatie die beïnvloedt hoe klant zich voelt."},
-
-{q:"Wat is geurmarketing?", a:"Gerichte verspreiding van geur om sfeer te creëren en koopgedrag te beïnvloeden."},
-{q:"Wat zijn impulsaankopen en waar vind je ze vaak?", a:"Ongeplande aankopen; vaak bij kassa of opvallende displays."},
-{q:"Noem 3 tips om verleidingen in de supermarkt te weerstaan.", a:"Maak een boodschappenlijst, ga niet met honger, ga op vaste momenten (2–3x per week)."},
-
-
-{q:"Wat is het doel van een schappenplan (planogram)?", a:"Overzichtelijke productplaatsing die logica voor klant creëert en verkoop stimuleert."},
-{q:"Wat is tijdelijke vs vaste artikelpresentatie?", a:"Vaste = permanente plaatsing; Tijdelijke = promo/displays die regelmatig wisselen om aandacht te trekken."},
-{q:"Wat is een 'shelf-tester' of sample?", a:"Kleine testhoeveelheid of demo die klanten laat proeven/proberen voordat kopen."},
-
-{q:"Waarom plakt een winkel prijs per eenheid (kg/l)?", a:"Om klanten duidelijkheid te geven en vergelijking tussen formaten/producten mogelijk te maken (wettelijk verplicht voor veel producten)."},
-{q:"Wat is 'voorprijzen'?", a:"Prijs die fabrikant al op product zet; retailer kan dit overnemen of aanpassen."},
-{q:"Wat is 'omprijzen'?", a:"Wanneer de winkelier een artikel een andere prijs geeft dan eerder vermeld."},
-
-{q:"Wat toon je op een elektronisch schaplabel?", a:"Prijs, promo-info en soms voorraadindicatie; centraal aanpasbaar."},
-{q:"Noem een nadeel van handmatig prijzen met stickers.", a:"Tijdrovend, kans op fouten, kan label info bedekken of product beschadigen bij verwijderen."}
+const cards_t1 = [
+    {q:"Wat is het assortiment?", a:"Alle producten die een winkel aanbiedt."},
+    {q:"Wat is het kernassortiment?", a:"Hoofdproducten waarvoor klanten komen."},
+    {q:"Wat is het randassortiment?", a:"Extra producten die het kernassortiment aanvullen."},
+    {q:"Wat is brede assortiment?", a:"Veel verschillende productgroepen."},
+    {q:"Wat is een smal assortiment?", a:"Weinig productgroepen."},
+    {q:"Wat is een diep assortiment?", a:"Veel varianten binnen één productgroep."},
+    {q:"Wat is een ondiep assortiment?", a:"Weinig varianten per productgroep."},
+    {q:"Wat betekent lengte van assortiment?", a:"Hoeveel producten er totaal zijn."},
+    {q:"Wat betekent hoogte van assortiment?", a:"Het gemiddelde prijsniveau."},
+    {q:"Wat is doelgroep?", a:"De groep mensen waarop het bedrijf zich richt."},
+    {q:"Hoe kies je doelgroep?", a:"Leeftijd, geslacht, woonplaats, inkomen, interesses."},
+    {q:"Waarom is doelgroep belangrijk?", a:"Voor juiste reclame en juiste producten."},
+    {q:"Kenmerk van goede bedrijfsnaam?", a:"Kort en duidelijk."},
+    {q:"Kenmerk van goede bedrijfsnaam 2?", a:"Makkelijk te onthouden."},
+    {q:"Kenmerk van goede bedrijfsnaam 3?", a:"Past bij het bedrijf."},
+    {q:"Kenmerk van goede bedrijfsnaam 4?", a:"Uniek en tijdloos."},
+    {q:"Wat is een slogan?", a:"Een korte zin die je product beschrijft."},
+    {q:"Wat is een winkelconcept?", a:"De stijl, sfeer en doelgroep van de winkel."},
+    {q:"Wat is marktsegmentatie?", a:"Klanten opdelen in doelgroepen."},
+    {q:"Wat is assortimentmix?", a:"De combinatie van productgroepen die de winkel aanbiedt."},
 ];
-// end cards
 
-/* ---------- App state ---------- */
-let deck = [...allCards];
-let idx = 0;
-let quiz = {active:false, sequence:[], current:0, score:0, total:0};
+const cards_t4l1 = [
+    {q:"Wat is uitprijzen?", a:"Prijs op artikel plaatsen."},
+    {q:"Wat is opprijzen?", a:"Prijs verhogen."},
+    {q:"Wat is afprijzen?", a:"Prijs verlagen."},
+    {q:"Wat is omprijzen?", a:"Prijs veranderen naar nieuwe prijs."},
+    {q:"Wat is voorprijzen?", a:"Prijs door fabrikant aangebracht."},
 
-/* UI refs */
-const qEl = document.getElementById('question');
-const aEl = document.getElementById('answer');
-const cardEl = document.getElementById('card');
-const counterEl = document.getElementById('counter');
-const prog = document.getElementById('progBar');
-const deckList = document.getElementById('deckList');
-const deckCount = document.getElementById('deckCount');
-const quizStatus = document.getElementById('quizStatus');
-const quizCountInput = document.getElementById('quizCount');
+    {q:"Wat is een barcode?", a:"Streepjescode die info bevat."},
+    {q:"Voordeel barcode?", a:"Sneller scannen en minder fouten."},
+    {q:"Wat is PLU-code?", a:"Code voor groenten en fruit."},
+    {q:"Wat is prijstang?", a:"Om prijsstickers op producten te kleven."},
+    {q:"Waarvoor gebruik je textieltang?", a:"Voor kledinglabels (kimball)."},
+    {q:"Wat is een kimbalkaartje?", a:"Label aan kleding met info."},
+    {q:"Wat is een elektronisch schaplabel?", a:"Digitale prijs aan het schap."},
 
-/* Render functions */
-function renderCard(){
-  const item = deck[idx];
-  qEl.textContent = item.q;
-  aEl.textContent = item.a;
-  counterEl.textContent = `Kaart ${idx+1} / ${deck.length}`;
-  prog.style.width = `${Math.round(((idx+1)/deck.length)*100)}%`;
-  Array.from(deckList.children).forEach((el,i)=> el.classList.toggle('active', i===idx));
-  cardEl.classList.remove('flipped'); cardEl.setAttribute('aria-pressed','false');
+    {q:"Wat is hardtag?", a:"Beveiliging tegen diefstal (kleding)."},
+    {q:"Wat is kabeltag?", a:"Diefstalbeveiliging met kabel."},
+    {q:"Wat is blisterverpakking?", a:"Dicht plastic ter bescherming en preventie."},
+    {q:"Wat is kleurklem?", a:"Beveiligingsclip aan producten."},
+    {q:"Wat is safer?", a:"Plastic box rond dure producten."},
+
+    {q:"Wat is Nutri-Score?", a:"Voedingslabel van A (gezond) tot E (ongezond)."},
+    {q:"Wat is EU Ecolabel?", a:"Label voor milieuvriendelijke producten."},
+    {q:"Wat is FSC-label?", a:"Hout uit verantwoord bosbeheer."},
+    {q:"Wat is recyclagesymbool?", a:"Toont dat verpakking recycleerbaar is."},
+    {q:"Wat is Tidy Man?", a:"Logo dat zegt dat je afval in vuilbak moet gooien."}
+];
+
+const cards_t4l2 = [
+    {q:"Wat is de platina zone?", a:"Bij ingang, hoogste verkoop."},
+    {q:"Wat is goud zone?", a:"Goed zichtbare zone met veel verkoop."},
+    {q:"Wat is zilver zone?", a:"Middelmatige verkoopzone."},
+    {q:"Wat is brons zone?", a:"Achteraan, minst verkoop."},
+
+    {q:"3 winkeloppervlaktes?", a:"Verkoop – Kassa – Operationeel."},
+
+    {q:"Wat is vaste presentatie?", a:"Producten staan altijd daar."},
+    {q:"Wat is tijdelijke presentatie?", a:"Acties/promoties op displays."},
+
+    {q:"Wat is geurmarketing?", a:"Geur gebruiken om koopgedrag te beïnvloeden."},
+    {q:"Wat is instore beleving?", a:"Sfeer/ervaring in de winkel."},
+    {q:"Wat zijn impulsaankopen?", a:"Ongeplande aankopen."},
+
+    {q:"Wat is gedwongen looproute?", a:"Route die klant moet volgen."},
+    {q:"Wat is vrije looproute?", a:"Klant kiest zelf pad."},
+    {q:"Waar staat groenten & fruit?", a:"Altijd bij ingang voor versgevoel."},
+
+    {q:"Wat is kassazone?", a:"Laatste kans voor impulsaankopen."},
+    {q:"Waarom zet supermarkt brood achteraan?", a:"Zodat klant door hele winkel moet."},
+    {q:"Waarom muziek in winkel?", a:"Sfeer creëren en klant langer houden."},
+    {q:"Waarom verlichting belangrijk?", a:"Producten aantrekkelijker maken."},
+    {q:"Wat betekent eye-level = buy-level?", a:"Producten op ooghoogte verkopen best."},
+];
+
+let currentTheme = [];
+let index = 0;
+
+function startTheme(theme) {
+    if (theme === "t1") currentTheme = cards_t1;
+    if (theme === "t4l1") currentTheme = cards_t4l1;
+    if (theme === "t4l2") currentTheme = cards_t4l2;
+
+    index = 0;
+
+    document.getElementById("menu").style.display = "none";
+    document.getElementById("flashcard-area").style.display = "block";
+    document.getElementById("back-btn").style.display = "block";
+
+    loadCard();
 }
-function buildList(){
-  deckList.innerHTML = '';
-  deck.forEach((c,i)=>{
-    const it = document.createElement('div');
-    it.className = 'deck-item' + (i===idx ? ' active' : '');
-    it.innerHTML = `<div style="font-size:14px">${i+1}. ${c.q.slice(0,48)}${c.q.length>48?'…':''}</div>
-                    <div style="font-size:12px;color:var(--muted)">${c.a.slice(0,48)}${c.a.length>48?'…':''}</div>`;
-    it.onclick = ()=>{ idx = i; renderCard(); };
-    deckList.appendChild(it);
-  });
-  deckCount.textContent = `${deck.length} kaarten`;
+
+function goBack() {
+    document.getElementById("menu").style.display = "flex";
+    document.getElementById("flashcard-area").style.display = "none";
+    document.getElementById("back-btn").style.display = "none";
 }
 
-/* Controls */
-function nextCard(){ if(quiz.active){ quizNext(); return } idx = (idx+1)%deck.length; renderCard(); }
-function prevCard(){ if(quiz.active){ /* ignore */ return } idx = (idx-1+deck.length)%deck.length; renderCard(); }
-function flipCard(){ cardEl.classList.toggle('flipped'); const is=cardEl.classList.contains('flipped'); cardEl.setAttribute('aria-pressed',String(is)); }
+function loadCard() {
+    document.getElementById("question").style.display = "block";
+    document.getElementById("answer").style.display = "none";
 
-/* Shuffle & reset */
-document.getElementById('shuffleBtn').onclick = ()=>{
-  for(let i=deck.length-1;i>0;i--){ const j = Math.floor(Math.random()*(i+1)); [deck[i],deck[j]]=[deck[j],deck[i]];}
-  idx=0; buildList(); renderCard();
-};
-document.getElementById('resetBtn').onclick = ()=>{
-  deck = [...allCards]; idx=0; buildList(); renderCard();
-};
-document.getElementById('flipBtn').onclick = flipCard;
-document.getElementById('nextBtn').onclick = nextCard;
-document.getElementById('prevBtn').onclick = prevCard;
-document.getElementById('showAllBtn').onclick = ()=>{
-  // quick autoplay flip through answers
-  let c=0; const orig=idx;
-  (function loop(){ if(c>=deck.length){ idx=orig; renderCard(); return;} idx=c; renderCard(); cardEl.classList.add('flipped'); c++; setTimeout(()=>{ cardEl.classList.remove('flipped'); setTimeout(loop,250); },900); })();
-};
-
-/* Card interactions */
-cardEl.addEventListener('click', flipCard);
-cardEl.addEventListener('keydown', (e)=>{ if(e.key==='Enter' || e.key===' ') { e.preventDefault(); flipCard(); }});
-window.addEventListener('keydown',(e)=>{
-  if(e.key==='ArrowRight' || e.key===' ') { e.preventDefault(); nextCard(); }
-  if(e.key==='ArrowLeft') { prevCard(); }
-});
-
-/* Touch swipe */
-let startX=null;
-cardEl.addEventListener('touchstart', e=> startX = e.changedTouches[0].clientX, {passive:true});
-cardEl.addEventListener('touchend', e=>{
-  if(startX===null) return; const dx = e.changedTouches[0].clientX - startX;
-  if(Math.abs(dx)>40){ if(dx<0) nextCard(); else prevCard(); } else flipCard();
-  startX=null;
-}, {passive:true});
-
-/* ---------- QUIZ MODE ---------- */
-function startQuiz(){
-  const n = Math.min(Math.max(1, parseInt(quizCountInput.value)||10), deck.length);
-  const pool = [...deck];
-  // shuffle pool and pick n
-  for(let i=pool.length-1;i>0;i--){ const j = Math.floor(Math.random()*(i+1)); [pool[i],pool[j]]=[pool[j],pool[i]];}
-  quiz.sequence = pool.slice(0,n);
-  quiz.active = true; quiz.current = 0; quiz.score = 0; quiz.total = n;
-  quizStatus.textContent = `Quiz actief — vraag 1 van ${n} • Score: 0`;
-  // show first quiz card
-  showQuizCard();
+    document.getElementById("question").innerHTML = currentTheme[index].q;
+    document.getElementById("answer").innerHTML = currentTheme[index].a;
 }
-function endQuiz(){
-  quiz.active = false;
-  quizStatus.textContent = `Quiz gestopt. Laatste score: ${quiz.score} / ${quiz.total}`;
-  // restore normal deck view
-  deck = [...allCards]; idx = 0; buildList(); renderCard();
-}
-function showQuizCard(){
-  if(!quiz.active) return;
-  const card = quiz.sequence[quiz.current];
-  qEl.textContent = card.q;
-  aEl.textContent = "(klik om antwoord te zien)"; // hide answer until flip; but flip will show real answer
-  cardEl.classList.remove('flipped'); cardEl.setAttribute('aria-pressed','false');
-  counterEl.textContent = `Quiz ${quiz.current+1} / ${quiz.total}`;
-  prog.style.width = `${Math.round(((quiz.current)/quiz.total)*100)}%`;
-}
-function quizNext(){
-  // when in quiz mode, pressing next means mark as incorrect (skip) — we use confirm flow: user flips to see answer then chooses correct/incorrect via prompt
-  if(!quiz.active) { idx = (idx+1)%deck.length; renderCard(); return; }
-  // show answer (flip)
-  flipCard();
-  // small prompt for marking correctness (simple): show confirm dialog (ok = correct)
-  setTimeout(()=> {
-    const correct = confirm("Had je het antwoord goed? OK = ja, Cancel = nee");
-    if(correct) quiz.score++;
-    quiz.current++;
-    if(quiz.current >= quiz.total){
-      // finish
-      quiz.active = false;
-      quizStatus.textContent = `Quiz klaar — Score: ${quiz.score} / ${quiz.total}`;
-      alert(`Quiz klaar!\nScore: ${quiz.score} / ${quiz.total}`);
-      // restore deck
-      deck = [...allCards]; idx = 0; buildList(); renderCard();
+
+function flipCard() {
+    let q = document.getElementById("question");
+    let a = document.getElementById("answer");
+
+    if (a.style.display === "none") {
+        q.style.display = "none";
+        a.style.display = "block";
     } else {
-      quizStatus.textContent = `Quiz actief — vraag ${quiz.current+1} van ${quiz.total} • Score: ${quiz.score}`;
-      showQuizCard();
+        a.style.display = "none";
+        q.style.display = "block";
     }
-  }, 300);
 }
 
-/* Bind quiz buttons */
-document.getElementById('startQuizBtn').onclick = ()=> {
-  startQuiz();
-};
-document.getElementById('endQuizBtn').onclick = ()=> {
-  endQuiz();
-};
+function nextCard() {
+    index = (index + 1) % currentTheme.length;
+    loadCard();
+}
 
-/* When user flips during quiz, show real answer */
-cardEl.addEventListener('click', ()=>{
-  if(quiz.active && cardEl.classList.contains('flipped')){
-    // show real answer
-    aEl.textContent = quiz.sequence[quiz.current].a;
-  } else if(!quiz.active && cardEl.classList.contains('flipped')){
-    // show normal answer
-    aEl.textContent = deck[idx].a;
-  }
-});
-
-/* Keyboard: during quiz, space/right = reveal+mark move */
-window.addEventListener('keydown', (e)=>{
-  if(quiz.active && (e.key===' ' || e.key==='ArrowRight')){
-    e.preventDefault();
-    // if not flipped, flip (to show answer); if flipped, trigger quizNext flow (mark)
-    if(!cardEl.classList.contains('flipped')) { flipCard(); aEl.textContent = quiz.sequence[quiz.current].a; }
-    else { quizNext(); }
-  }
-});
-
-/* Init */
-buildList();
-renderCard();
-setTimeout(()=>cardEl.focus(),300);
+function prevCard() {
+    index = (index - 1 + currentTheme.length) % currentTheme.length;
+    loadCard();
+}
 </script>
+
 </body>
 </html>
