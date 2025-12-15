@@ -2,255 +2,114 @@
 <html lang="nl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Verkoop Flashcards</title>
-
+<title>Logistiek Flashcards – Thema 5</title>
 <style>
-    body {
-        margin: 0;
-        background: #202020;
-        color: white;
-        font-family: Arial, sans-serif;
-    }
-
-    header {
-        background: #2d2d2d;
-        padding: 15px;
-        text-align: center;
-        font-weight: bold;
-        font-size: 20px;
-        border-bottom: 1px solid #444;
-    }
-
-    #menu {
-        display: flex;
-        flex-direction: column;
-        padding: 20px;
-        gap: 15px;
-    }
-
-    .menu-btn {
-        padding: 18px;
-        background: #3a3a3a;
-        border: none;
-        color: white;
-        font-size: 17px;
-        border-radius: 8px;
-        cursor: pointer;
-        text-align: center;
-    }
-
-    .menu-btn:hover {
-        background: #4d4d4d;
-    }
-
-    #flashcard-area {
-        display: none;
-        height: calc(100vh - 120px);
-        padding: 15px;
-        text-align: center;
-    }
-
-    .card {
-        background: #333;
-        border-radius: 10px;
-        padding: 25px;
-        height: 60%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 20px;
-        margin-bottom: 20px;
-    }
-
-    .buttons {
-        display: flex;
-        justify-content: space-between;
-    }
-
-    button {
-        width: 48%;
-        padding: 15px;
-        border: none;
-        background: #505050;
-        color: white;
-        border-radius: 8px;
-        font-size: 16px;
-    }
-
-    button:hover {
-        background: #5f5f5f;
-    }
-
-    #back-btn {
-        position: absolute;
-        top: 10px;
-        left: 10px;
-        background: #444;
-        border-radius: 6px;
-        padding: 10px;
-        font-size: 14px;
-        display: none;
-    }
+body {
+  font-family: Arial, sans-serif;
+  background: #0f0f0f;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+.card {
+  background: #1c1c1c;
+  padding: 30px;
+  width: 500px;
+  border-radius: 15px;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 0 20px rgba(0,255,255,0.2);
+}
+.card:hover {
+  box-shadow: 0 0 30px rgba(0,255,255,0.4);
+}
+button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background: cyan;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+}
 </style>
 </head>
-
 <body>
 
-<header>Flashcards Verkoop – O&L</header>
-
-<button id="back-btn" onclick="goBack()">⬅ Terug</button>
-
-<div id="menu">
-    <button class="menu-btn" onclick="startTheme('t1')">Thema 1 – Level 2</button>
-    <button class="menu-btn" onclick="startTheme('t4l1')">Thema 4 – Level 1</button>
-    <button class="menu-btn" onclick="startTheme('t4l2')">Thema 4 – Level 2</button>
-</div>
-
-<div id="flashcard-area">
-    <div id="card" class="card" onclick="flipCard()">
-        <div id="question"></div>
-        <div id="answer" style="display:none; color:lightgreen;"></div>
-    </div>
-
-    <div class="buttons">
-        <button onclick="prevCard()">← Vorige</button>
-        <button onclick="nextCard()">Volgende →</button>
-    </div>
+<div class="card" onclick="flipCard()">
+  <h2 id="question"></h2>
+  <p id="answer" style="display:none;"></p>
+  <button onclick="nextCard(event)">Volgende ➜</button>
 </div>
 
 <script>
+const cards = [
+  { q: "Wat betekent ITM?", a: "Intern Transportmiddel" },
 
-const cards_t1 = [
-    {q:"Wat is het assortiment?", a:"Alle producten die een winkel aanbiedt."},
-    {q:"Wat is het kernassortiment?", a:"Hoofdproducten waarvoor klanten komen."},
-    {q:"Wat is het randassortiment?", a:"Extra producten die het kernassortiment aanvullen."},
-    {q:"Wat is brede assortiment?", a:"Veel verschillende productgroepen."},
-    {q:"Wat is een smal assortiment?", a:"Weinig productgroepen."},
-    {q:"Wat is een diep assortiment?", a:"Veel varianten binnen één productgroep."},
-    {q:"Wat is een ondiep assortiment?", a:"Weinig varianten per productgroep."},
-    {q:"Wat betekent lengte van assortiment?", a:"Hoeveel producten er totaal zijn."},
-    {q:"Wat betekent hoogte van assortiment?", a:"Het gemiddelde prijsniveau."},
-    {q:"Wat is doelgroep?", a:"De groep mensen waarop het bedrijf zich richt."},
-    {q:"Hoe kies je doelgroep?", a:"Leeftijd, geslacht, woonplaats, inkomen, interesses."},
-    {q:"Waarom is doelgroep belangrijk?", a:"Voor juiste reclame en juiste producten."},
-    {q:"Kenmerk van goede bedrijfsnaam?", a:"Kort en duidelijk."},
-    {q:"Kenmerk van goede bedrijfsnaam 2?", a:"Makkelijk te onthouden."},
-    {q:"Kenmerk van goede bedrijfsnaam 3?", a:"Past bij het bedrijf."},
-    {q:"Kenmerk van goede bedrijfsnaam 4?", a:"Uniek en tijdloos."},
-    {q:"Wat is een slogan?", a:"Een korte zin die je product beschrijft."},
-    {q:"Wat is een winkelconcept?", a:"De stijl, sfeer en doelgroep van de winkel."},
-    {q:"Wat is marktsegmentatie?", a:"Klanten opdelen in doelgroepen."},
-    {q:"Wat is assortimentmix?", a:"De combinatie van productgroepen die de winkel aanbiedt."},
+  { q: "Geef 3 interne transportmiddelen", a: "Heftruck, transpallet, steekwagen" },
+
+  { q: "Waarvoor dient een pakbon / leveringsbon?", a: "Toont welke goederen geleverd zijn, aantallen en artikelcodes" },
+
+  { q: "Waarvoor dient een factuur?", a: "Document om de levering te betalen" },
+
+  { q: "Wat is een CMR-vrachtbrief?", a: "Transportdocument bij levering door externe vervoerder" },
+
+  { q: "Wat is een wachtlocatie?", a: "Tijdelijke plaats waar goederen staan voor controle" },
+
+  { q: "Noem de stappen van goederenontvangst", a: "Lossen → wachtlocatie → controleren → documenten tekenen → labelen" },
+
+  { q: "Welke soorten stellingen zijn er?", a: "Legbordstelling, palletstelling, grond/blokstapeling" },
+
+  { q: "Wat sla je op in een legbordstelling?", a: "Kleine artikelen in dozen of bakken" },
+
+  { q: "Wat sla je op in een palletstelling?", a: "Goederen op palletten" },
+
+  { q: "Wat is blok- of grondstapeling?", a: "Goederen worden op de grond en op elkaar opgeslagen" },
+
+  { q: "Wat is FIFO?", a: "First In First Out – oudste goederen eerst weg" },
+
+  { q: "Wat is FEFO?", a: "First Expired First Out – wat eerst vervalt gaat eerst weg" },
+
+  { q: "Wat is LIFO?", a: "Last In First Out – laatste goederen gaan eerst weg" },
+
+  { q: "Wat betekent locatiecode ER-2-0?", a: "Gang E – Rek 2 – Niveau 0" },
+
+  { q: "Wat is een vaste locatie?", a: "Artikel ligt altijd op dezelfde plaats" },
+
+  { q: "Wat is een vrije locatie?", a: "Artikel kan op elke vrije plaats liggen" },
+
+  { q: "Noem verpakkingsmateriaal", a: "Dozen, bakken, folie, paletten" },
+
+  { q: "Welke soorten logistieke bedrijven bestaan er?", a: "Groothandel, distributiecentrum, transportbedrijf, groepagecentrum, public warehouse" },
+
+  { q: "Wat doet een distributiecentrum?", a: "Bevoorraadt winkels van dezelfde keten" },
+
+  { q: "Wat doet een groepagecentrum?", a: "Bundelt goederen van meerdere leveranciers per klant" }
 ];
 
-const cards_t4l1 = [
-    {q:"Wat is uitprijzen?", a:"Prijs op artikel plaatsen."},
-    {q:"Wat is opprijzen?", a:"Prijs verhogen."},
-    {q:"Wat is afprijzen?", a:"Prijs verlagen."},
-    {q:"Wat is omprijzen?", a:"Prijs veranderen naar nieuwe prijs."},
-    {q:"Wat is voorprijzen?", a:"Prijs door fabrikant aangebracht."},
-
-    {q:"Wat is een barcode?", a:"Streepjescode die info bevat."},
-    {q:"Voordeel barcode?", a:"Sneller scannen en minder fouten."},
-    {q:"Wat is PLU-code?", a:"Code voor groenten en fruit."},
-    {q:"Wat is prijstang?", a:"Om prijsstickers op producten te kleven."},
-    {q:"Waarvoor gebruik je textieltang?", a:"Voor kledinglabels (kimball)."},
-    {q:"Wat is een kimbalkaartje?", a:"Label aan kleding met info."},
-    {q:"Wat is een elektronisch schaplabel?", a:"Digitale prijs aan het schap."},
-
-    {q:"Wat is hardtag?", a:"Beveiliging tegen diefstal (kleding)."},
-    {q:"Wat is kabeltag?", a:"Diefstalbeveiliging met kabel."},
-    {q:"Wat is blisterverpakking?", a:"Dicht plastic ter bescherming en preventie."},
-    {q:"Wat is kleurklem?", a:"Beveiligingsclip aan producten."},
-    {q:"Wat is safer?", a:"Plastic box rond dure producten."},
-
-    {q:"Wat is Nutri-Score?", a:"Voedingslabel van A (gezond) tot E (ongezond)."},
-    {q:"Wat is EU Ecolabel?", a:"Label voor milieuvriendelijke producten."},
-    {q:"Wat is FSC-label?", a:"Hout uit verantwoord bosbeheer."},
-    {q:"Wat is recyclagesymbool?", a:"Toont dat verpakking recycleerbaar is."},
-    {q:"Wat is Tidy Man?", a:"Logo dat zegt dat je afval in vuilbak moet gooien."}
-];
-
-const cards_t4l2 = [
-    {q:"Wat is de platina zone?", a:"Bij ingang, hoogste verkoop."},
-    {q:"Wat is goud zone?", a:"Goed zichtbare zone met veel verkoop."},
-    {q:"Wat is zilver zone?", a:"Middelmatige verkoopzone."},
-    {q:"Wat is brons zone?", a:"Achteraan, minst verkoop."},
-
-    {q:"3 winkeloppervlaktes?", a:"Verkoop – Kassa – Operationeel."},
-
-    {q:"Wat is vaste presentatie?", a:"Producten staan altijd daar."},
-    {q:"Wat is tijdelijke presentatie?", a:"Acties/promoties op displays."},
-
-    {q:"Wat is geurmarketing?", a:"Geur gebruiken om koopgedrag te beïnvloeden."},
-    {q:"Wat is instore beleving?", a:"Sfeer/ervaring in de winkel."},
-    {q:"Wat zijn impulsaankopen?", a:"Ongeplande aankopen."},
-
-    {q:"Wat is gedwongen looproute?", a:"Route die klant moet volgen."},
-    {q:"Wat is vrije looproute?", a:"Klant kiest zelf pad."},
-    {q:"Waar staat groenten & fruit?", a:"Altijd bij ingang voor versgevoel."},
-
-    {q:"Wat is kassazone?", a:"Laatste kans voor impulsaankopen."},
-    {q:"Waarom zet supermarkt brood achteraan?", a:"Zodat klant door hele winkel moet."},
-    {q:"Waarom muziek in winkel?", a:"Sfeer creëren en klant langer houden."},
-    {q:"Waarom verlichting belangrijk?", a:"Producten aantrekkelijker maken."},
-    {q:"Wat betekent eye-level = buy-level?", a:"Producten op ooghoogte verkopen best."},
-];
-
-let currentTheme = [];
 let index = 0;
-
-function startTheme(theme) {
-    if (theme === "t1") currentTheme = cards_t1;
-    if (theme === "t4l1") currentTheme = cards_t4l1;
-    if (theme === "t4l2") currentTheme = cards_t4l2;
-
-    index = 0;
-
-    document.getElementById("menu").style.display = "none";
-    document.getElementById("flashcard-area").style.display = "block";
-    document.getElementById("back-btn").style.display = "block";
-
-    loadCard();
-}
-
-function goBack() {
-    document.getElementById("menu").style.display = "flex";
-    document.getElementById("flashcard-area").style.display = "none";
-    document.getElementById("back-btn").style.display = "none";
-}
+const questionEl = document.getElementById("question");
+const answerEl = document.getElementById("answer");
 
 function loadCard() {
-    document.getElementById("question").style.display = "block";
-    document.getElementById("answer").style.display = "none";
-
-    document.getElementById("question").innerHTML = currentTheme[index].q;
-    document.getElementById("answer").innerHTML = currentTheme[index].a;
+  questionEl.innerText = cards[index].q;
+  answerEl.innerText = cards[index].a;
+  answerEl.style.display = "none";
 }
 
 function flipCard() {
-    let q = document.getElementById("question");
-    let a = document.getElementById("answer");
-
-    if (a.style.display === "none") {
-        q.style.display = "none";
-        a.style.display = "block";
-    } else {
-        a.style.display = "none";
-        q.style.display = "block";
-    }
+  answerEl.style.display = answerEl.style.display === "none" ? "block" : "none";
 }
 
-function nextCard() {
-    index = (index + 1) % currentTheme.length;
-    loadCard();
+function nextCard(e) {
+  e.stopPropagation();
+  index = (index + 1) % cards.length;
+  loadCard();
 }
 
-function prevCard() {
-    index = (index - 1 + currentTheme.length) % currentTheme.length;
-    loadCard();
-}
+loadCard();
 </script>
 
 </body>
